@@ -38,6 +38,8 @@ services:
       DATABASE_HOST: postgres
       PHP_USER_ID: ${USER_UNIX_ID}
       ENABLE_GII: 1
+      PRODUCCION: 0
+      
     ports: 
       - 8000:80
 
