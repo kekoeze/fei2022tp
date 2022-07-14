@@ -1,4 +1,4 @@
-version: '2.1'
+version: '3.7'
 services:
 
   #frontend:
@@ -22,9 +22,9 @@ services:
     volumes:
       - ./data/postgres:/var/lib/postgresql/data:delegated
     ports:
-    - '5432:5432'
+      - '5432:5432'
     networks:
-      red:
+      - red_ap
 
   backend:
     image: yiisoftware/yii2-php:7.1-apache
@@ -35,13 +35,15 @@ services:
       DATABASE_NAME: ${DATABASE_NAME}
       DATABASE_PASS: ${DATABASE_PASS}
       DATABASE_USER: ${DATABASE_USER}
-      DATABASE_HOST: postgres
-      PHP_USER_ID: ${USER_UNIX_ID}
+      DATABASE_HOST: ${DATABASE_HOST}
+      PHP_USER_ID:   ${USER_UNIX_ID}
       ENABLE_GII: 1
       PRODUCCION: 0
       
     ports: 
       - 8000:80
-
+    networks:
+      - red_ap
 networks:
-  red:
+  red_ap:
+     driver: bridge
