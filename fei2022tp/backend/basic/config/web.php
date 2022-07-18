@@ -48,31 +48,19 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [
+            'rules' => [[
                 'class' => 'yii\rest\UrlRule',
                 'pluralize' => false,
-                'controller' => [
-                    'apiv1/AulaController', 'apiv1/CarreraController',
-                    'apiv1/HorarioMateriaController',
-                    'apiv1/MateriaController',
-                    'apiv1/ProfesorController',
-                    'apiv1/ReservaAulaController',
-                ]
-            ],
+                'controller' => ['apiv1/carrera', 'apiv1/aula', 'apiv1/horariomateria', 'apiv1/materia', 'apiv1/profesor', 'apiv1/reservaaula'],
+            ]],
         ],
 
     ], 'modules' => [
         'apiv1' => [
-            'class' => [
-                'app\modules\apiv1\carrera',
-                'app\modules\apiv1\aula',
-                'app\modules\apiv1\materia',
-                'app\modules\apiv1\profesor',
-                'app\modules\apiv1\HorarioMateria',
-                'app\modules\apiv1\ReservaAula',
-            ]
-
+            'class' => app\modules\apiv1\Apiv1Module::class,
         ],
+
+
     ],
     'params' => $params,
 
