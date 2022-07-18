@@ -3,13 +3,14 @@
 namespace app\modules\apiv1\controllers;
 
 use yii\rest\ActiveController;
-use yii\web\Controller;
 
 /**
  * Default controller for the `apiv1` module
  */
 class AulaController extends ActiveController
 {
+
+    public $modelClass = 'app\modules\models\Aula';
     /**
      * Renders the index view for the module
      * @return string

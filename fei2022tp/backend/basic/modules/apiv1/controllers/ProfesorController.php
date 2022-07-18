@@ -10,6 +10,7 @@ use yii\web\Controller;
  */
 class ProfesorController extends ActiveController
 {
+    public $modelClass = 'app\modules\models\Profesor';
     /**
      * Renders the index view for the module
      * @return string

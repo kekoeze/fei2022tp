@@ -10,6 +10,8 @@ use yii\rest\ActiveController;
  */
 class CarreraController extends ActiveController
 {
+
+    public $modelClass = 'app\modules\models\Carrera';
     /**
      * Renders the index view for the module
      * @return string

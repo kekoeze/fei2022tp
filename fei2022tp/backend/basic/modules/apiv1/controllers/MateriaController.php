@@ -10,6 +10,7 @@ use yii\web\Controller;
  */
 class MateriaController extends ActiveController
 {
+    public $modelClass = 'app\modules\models\Materia';
     /**
      * Renders the index view for the module
      * @return string

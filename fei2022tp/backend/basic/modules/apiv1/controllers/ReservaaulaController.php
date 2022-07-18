@@ -8,8 +8,9 @@ use yii\web\Controller;
 /**
  * Default controller for the `apiv1` module
  */
-class HorarioMateriaController extends ActiveController
+class ReservaaulaController extends ActiveController
 {
+    public $modelClass = 'app\modules\models\ReservaAula';
     /**
      * Renders the index view for the module
      * @return string
