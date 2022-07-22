@@ -39,6 +39,7 @@
 
     <v-main>
       <HelloWorld/>
+      <probar-axios/>
     </v-main>
   </v-app>
 </template>
@@ -46,11 +47,13 @@
 <script>
 import HelloWorld from './components/HelloWorld';
 
+import ProbarAxios from './components/ProbarAxios.vue';
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    HelloWorld,ProbarAxios
+    
   },
 
   data: () => ({
