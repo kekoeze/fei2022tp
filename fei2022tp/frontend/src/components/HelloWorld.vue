@@ -9,6 +9,7 @@
       :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-4'"
       flat
       tile>
+     
       <v-list-item-title>Programador</v-list-item-title>
     <v-icon style="" >mdi-backspace-reverse</v-icon>
     </v-list-item>
@@ -39,13 +40,24 @@
           :key="item.title"
           link
         >
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
+          
+        
+            <v-list-item-content v-if="item.id==2"><router-link class="sacarStiloHref" to="/about"><v-list-item-icon >
+           <v-icon >{{ item.icon }}</v-icon>
           </v-list-item-icon>
-
+          
+            <v-list-item-title style="color:rgba(0, 0, 0, 0.87);">{{item.title}}</v-list-item-title></router-link>
+          </v-list-item-content>
+          
+          
+          <div v-if="item.id!=2">
+          <v-list-item-icon >
+           <v-icon >{{ item.icon }}</v-icon>
+          </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
+          </div>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -60,9 +72,9 @@ export default {
   data: () => ({
     drawer: true,
       items: [
-          { title: 'Home', icon: 'mdi-home-city' },
-          { title: 'acerca de', icon: 'mdi-account' },
-          { title: 'Users', icon: 'mdi-account-group-outline' },
+          { id:1,title: 'Home', icon: 'mdi-home-city' },
+          { id:2,title: 'About', icon: 'mdi-account' },
+          { id:3,title: 'Users', icon: 'mdi-account-group-outline' },
         ],
     carreras:[],
     mini: true,
@@ -92,11 +104,11 @@ export default {
 .sacarStiloHref{
 
   text-decoration:none;
-  color: white;
+  
 }
 .butonStyle{
    
-   background-color: rgb(0, 60, 255);
+  
  
    margin: 10px;
 }
