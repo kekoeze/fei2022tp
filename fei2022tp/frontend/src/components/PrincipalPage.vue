@@ -1,5 +1,7 @@
 <template>
-  <v-card>
+   <div>
+  <v-card  class="float-left">
+
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant.sync="mini"
@@ -42,39 +44,41 @@
         >
           
         
-            <v-list-item-content v-if="item.id==2"><router-link class="sacarStiloHref" to="/about"><v-list-item-icon >
-           <v-icon >{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-          
-            <v-list-item-title style="color:rgba(0, 0, 0, 0.87);">{{item.title}}</v-list-item-title></router-link>
-          </v-list-item-content>
-          
-          
-          <div v-if="item.id!=2">
+        <router-link :to="item.path" class="sacarStiloHref" >
+          <v-list-item-content >
+       
+     
           <v-list-item-icon >
            <v-icon >{{ item.icon }}</v-icon>
           </v-list-item-icon>
-          <v-list-item-content>
+         
             <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-          </div>
+        
+          </v-list-item-content>  </router-link>
         </v-list-item>
       </v-list>
+        
     </v-navigation-drawer>
+   
   </v-card>
+ 
+  </div>
 </template>
 
 
 <script>
 import axios from 'axios'
 export default {
-  name: 'HelloWorld',
+  name: 'PrincipalPage',
   data: () => ({
     drawer: true,
       items: [
-          { id:1,title: 'Home', icon: 'mdi-home-city' },
-          { id:2,title: 'About', icon: 'mdi-account' },
-          { id:3,title: 'Users', icon: 'mdi-account-group-outline' },
+          { id:1,title: 'Home', icon: 'mdi-home-city',path:'/' },
+          { id:2,title: 'About', icon: 'mdi-account',path:'/about' },
+          { id:3,title: 'AbmAula', icon: 'mdi-account-group-outline',path:'/abmaula' },
+          { id:4,title: 'AbmCarrera', icon: 'mdi-account-group-outline',path:'/abmcarrera' },
+          { id:5,title: 'AbmProfesor', icon: 'mdi-account-group-outline',path:'/abmprofesor' },
+          { id:6,title: 'AbmMateria', icon: 'mdi-account-group-outline',path:'/abmmateria' }
         ],
     carreras:[],
     mini: true,
@@ -104,13 +108,18 @@ export default {
 .sacarStiloHref{
 
   text-decoration:none;
-  
+  color:rgb(22, 18, 18)
 }
 .butonStyle{
    
   
  
    margin: 10px;
+}
+.achicar{
+  width: 50%;
+  height: auto;
+  
 }
 .texto{
 height:25px;

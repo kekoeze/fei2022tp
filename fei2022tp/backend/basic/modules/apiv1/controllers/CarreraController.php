@@ -36,7 +36,7 @@ class CarreraController extends ActiveController
                 'cors'  => [
                     // restrict access to domains:
                     'Origin'                           => static::allowedDomains(),
-                    'Access-Control-Request-Method'    => ['POST', 'GET', 'OPTIONS'],
+                    'Access-Control-Request-Method'    => ['POST', 'GET', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
                     'Access-Control-Allow-Credentials' => true,
                     'Access-Control-Max-Age'           => 3600,                 // Cache (seconds)
                     'Access-Control-Allow-Headers' => ['authorization', 'X-Requested-With', 'content-type', 'some_custom_header']

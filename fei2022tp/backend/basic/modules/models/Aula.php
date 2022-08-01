@@ -11,6 +11,7 @@ use Yii;
  * @property string $descripccion
  * @property string $ubicacion
  * @property int|null $cant_proyector
+ * @property int|null $cant_pcs
  * @property int|null $aforo
  * @property bool|null $es_climatizado
  *
@@ -33,8 +34,8 @@ class Aula extends \yii\db\ActiveRecord
     {
         return [
             [['descripccion', 'ubicacion'], 'required'],
-            [['cant_proyector', 'aforo'], 'default', 'value' => null],
-            [['cant_proyector', 'aforo'], 'integer'],
+            [['cant_proyector', 'cant_pcs', 'aforo'], 'default', 'value' => null],
+            [['cant_proyector', 'cant_pcs', 'aforo'], 'integer'],
             [['es_climatizado'], 'boolean'],
             [['descripccion', 'ubicacion'], 'string', 'max' => 128],
         ];
@@ -50,6 +51,7 @@ class Aula extends \yii\db\ActiveRecord
             'descripccion' => 'Descripccion',
             'ubicacion' => 'Ubicacion',
             'cant_proyector' => 'Cant Proyector',
+            'cant_pcs' => 'Cant Pcs',
             'aforo' => 'Aforo',
             'es_climatizado' => 'Es Climatizado',
         ];
@@ -58,7 +60,7 @@ class Aula extends \yii\db\ActiveRecord
     /**
      * Gets query for [[ReservaAulas]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery|ReservaAulaQuery
      */
     public function getReservaAulas()
     {
