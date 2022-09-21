@@ -1,4 +1,5 @@
 <template>
+
    <div>
   <v-card  class="float-left">
 
@@ -20,7 +21,7 @@
           <v-img  src="../assets/keko.png"></v-img>
         </v-list-item-avatar>
 
-        <v-list-item-title>Ezequiel Villablanca</v-list-item-title>
+        <v-list-item-title>{{usuario.usuario}}</v-list-item-title>
       
         
 
@@ -35,16 +36,38 @@
 
     </v-list-item>
       <v-divider></v-divider>
-
-      <v-list dense>
+  <v-list dense v-if="usuario.isAdmin==false">
         <v-list-item
-          v-for="item in items"
+          v-for="item in itemsNoAdmin"
           :key="item.title"
           link
+          
         >
           
         
-        <router-link :to="item.path" class="sacarStiloHref" >
+        <router-link  :to="item.path" class="sacarStiloHref" >
+          <v-list-item-content >
+       
+     
+          <v-list-item-icon >
+           <v-icon >{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+         
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+        
+          </v-list-item-content>  </router-link>
+        </v-list-item>
+      </v-list>
+      <v-list dense v-if="usuario.isAdmin">
+        <v-list-item
+          v-for="item in itemsAdmin"
+          :key="item.title"
+          link
+          
+        >
+          
+        
+        <router-link  :to="item.path" class="sacarStiloHref" >
           <v-list-item-content >
        
      
@@ -63,34 +86,43 @@
   </v-card>
  
   </div>
+
 </template>
 
 
 <script>
 import axios from 'axios'
+import cockies from "vue-cookie";
 export default {
   name: 'PrincipalPage',
   data: () => ({
+    usuario:{usuario:'',
+            contrasenia:'',
+            email:'',
+            isAdmin:''},
     drawer: true,
-      items: [
-          { id:1,title: 'Home', icon: 'mdi-home-city',path:'/' },
-          { id:2,title: 'About', icon: 'mdi-account',path:'/about' },
-          { id:3,title: 'AbmAula', icon: 'mdi-account-group-outline',path:'/abmaula' },
-          { id:4,title: 'AbmCarrera', icon: 'mdi-account-group-outline',path:'/abmcarrera' },
-          { id:5,title: 'AbmProfesor', icon: 'mdi-account-group-outline',path:'/abmprofesor' },
-          { id:6,title: 'AbmMateria', icon: 'mdi-account-group-outline',path:'/abmmateria' }
+      itemsAdmin: [
+          { id:1,title: 'Home', icon: 'mdi-home-city',path:'/principal',isADmin:true },
+          { id:3,title: 'AbmAula', icon: 'mdi-account-group-outline',path:'/abmaula',isADmin:true },
+          { id:4,title: 'AbmCarrera', icon: 'mdi-account-group-outline',path:'/abmcarrera',isADmin:true },
+          { id:5,title: 'AbmProfesor', icon: 'mdi-account-group-outline',path:'/abmprofesor',isADmin:true },
+          { id:6,title: 'AbmMateria', icon: 'mdi-account-group-outline',path:'/abmmateria',isADmin:true },
+          { id:7,title: 'AbmReserva', icon: 'mdi-account-group-outline',path:'/abmreserva',isADmin:true },
+          
+          
         ],
+        itemsNoAdmin:[{ id:2,title: 'CalendarioAula', icon: 'mdi-account',path:'/calendarioaula',isADmin:false }],
     carreras:[],
     mini: true,
     
   }),
+ 
  mounted () {
     var that = this;
-
-
-
-
-          
+      that.usuario=JSON.parse(cockies.get('usuario'))
+      console.log(Object.values(that.usuario));
+      console.log(that.usuario.isAdmin);
+      
             axios.get("/apiv1/carrera").then(function(response) {
                 console.log(response.data);
                 that.carreras = response.data;
@@ -101,6 +133,13 @@ export default {
                 console.log(error);
             }).then(function() {});
     }
+   , methods: {
+      isAdmin(){
+        var that=this;
+        that.usuario=JSON.parse(cockies.get('usuario'))
+        
+      }
+    },
   }
 
 </script>

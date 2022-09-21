@@ -1,140 +1,253 @@
 <template>
-     <div>
-    <h1>Abm carrera</h1>
-     <form>
-    <v-text-field
-      v-model="registro.nombre"
-    
-      label="descripcion"
-      required
-      
-    ></v-text-field>
-  </form>
-    <botonera-abm
-    @first="first()"
-    @prev="prev()"
-    @next="next()"
-    @last="last()"
-    @save="save()"
-    @remove="remove()"
-    />
-  
-    </div>
+  <v-data-table
+    :headers="headers"
+    :items="carreras"
+    sort-by="carreras"
+    class="elevation-1"
+  >
+    <template v-slot:top>
+      <v-toolbar
+        flat
+      >
+        <v-toolbar-title>My CRUD</v-toolbar-title>
+        <v-divider
+          class="mx-4"
+          inset
+          vertical
+        ></v-divider>
+        <v-spacer></v-spacer>
+        <v-dialog
+          v-model="dialog"
+          max-width="500px"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              dark
+              class="mb-2"
+              v-bind="attrs"
+              v-on="on"
+            >
+              nueva carrera
+            </v-btn>
+          </template>
+          <v-card  >
+            <v-card-title>
+              <span class="text-h5">{{ formTitle }}</span>
+            </v-card-title>
 
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field v-on:keyup.enter="save()"
+                      v-model="editedItem.nombre"
+                      label="elegir nombre"
+                    ></v-text-field>
+                  </v-col>
+                 
+                </v-row>
+              </v-container>
+            </v-card-text>
 
-
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn 
+                color="blue darken-1"
+                text
+                @click="close"
+              >
+                Cancel
+              </v-btn>
+              <v-btn 
+                color="blue darken-1"
+                text
+                @click="save"
+              >
+                Save
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-card>
+            <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
+    </template>
+   <template v-slot:[`item.actions`]="{ item }">
+      <v-icon
+        small
+        class="mr-2"
+        @click="editItem(item)"
+      >
+        mdi-pencil
+      </v-icon>
+      <v-icon
+        small
+        @click="deleteItem(item)"
+      >
+        mdi-delete
+      </v-icon>
+    </template>
+    <template v-slot:no-data>
+      <v-btn
+        color="primary"
+        @click="inicializar"
+      >
+        Reset
+      </v-btn>
+    </template>
+  </v-data-table>
 </template>
 
 <script>
-import BotoneraAbm from "../components/BotoneraAbm.vue"
+  export default {
+    data: () => ({
+      dialog: false,
+      dialogDelete: false,
+      headers: [
+        {
+          text: 'carreras',
+          align: 'start',
+          sortable: false,
+          value: 'nombre',
+        },
+        
+         { text: 'Actions', value: 'actions', sortable: false },
+      ],
+       carreras:[{
+            id:0,
+            nombre:null,
 
-export default {
-  name:"AbmCarreras",
-  components:{BotoneraAbm},
-    data:()=>({
-      registro:{
-          id:null,
-          nombre:null,
-       
-
-
+        }],
+      editedIndex: -1,
+      editedItem: {
+        nombre: '',
+     
       },
-      paginacion:{
-
-      
-      currentPage:0,
-      pageCount:0,
-      totalCount:0,
-      cargando:false}
-      
+      defaultItem: {
+        nombre: '',
+       
+      },
     }),
+
+    computed: {
+      formTitle () {
+        return this.editedIndex === -1 ? 'nueva carrera' : 'editar carrera'
+      },
+    },
+
+    watch: {
+      dialog (val) {
+        val || this.close()
+      },
+      dialogDelete (val) {
+        val || this.closeDelete()
+      },
+    },
+
+    created () {
+      this.inicializar()
+    },
+
     methods: {
-        first(){
-            this.loadData(1)
-        },
-        next(){
-            this.loadData(parseInt(this.paginacion.currentPage)+1)
-            console.log("entro en next: "+this.paginacion.currentPage);
-        },
-        prev(){
-            this.loadData(parseInt(this.paginacion.currentPage)-1)
-        },
-         last(){
-             console.log("final de pagina:"+this.paginacion.totalCount);
-            this.loadData(parseInt(this.paginacion.totalCount))
-            
-        },
-        loadData(page){
-          console.log("la pagina es:"+page);
-          console.log("/apiv1/carrera?per-page=1&page="+page);
-          this.paginacion.cargando=true;
-          var that=this;
-          this.axios.get('/apiv1/carrera?per-page=1&page=' + page)
-          .then(function(response){
-              
-            if(response.data.length>0){
+      inicializar () {
+          
+             var that = this;
+             this.axios.get('/apiv1/carrera').then(function(response) {
+                console.log("las carreras son: "+response.data);
+                that.carreras = response.data;
                 
-                that.registro.id=response.data[0].id
-                that.registro.nombre=response.data[0].nombre
-               that.paginacion.currentPage=response.headers["x-pagination-current-page"];
-               that.paginacion.pageCount=response.headers["x-pagination-page-count"];
-               that.paginacion.totalCount=response.headers["x-pagination-total-count"];
-               
-               
                 
-            }
-          }).catch(function(error){
-            console.log(error)
-          }).then(function(){
-            that.paginacion.cargando=false;
-          })
 
-        },
-        save(){
-            const data={
-                'nombre':this.registro.nombre,
-                
-            }
-            console.log(data);
-            var that=this;
-            this.axios.post('/apiv1/carrera',data).then(function(response){
-                that.registro.id=response.data.id
-                that.registro.nombre=response.data.nombre
-                
-            }).catch(function(error){
+            }).catch(function(error) {
                 console.log(error);
-            }).then(function(){
-                alert("registro guardado")
-                that.paginacion.cargando=false;
-            })
+            }).then(function() {});
+            
+      },
 
-        },
-        remove(){
-            var that =this;
-            this.axios.delete("/apiv1/carrera/"+this.registro.id).then(function(response){
+      editItem (item) {
+        console.log("entro aca");
+        this.editedIndex = this.carreras.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+       
+        this.dialog = true
+      },
+
+      deleteItem (item) {
+        this.editedIndex = this.carreras.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+      
+        this.dialogDelete = true
+      },
+
+      deleteItemConfirm () {
+        this.carreras.splice(this.editedIndex, 1)
+        this.closeDelete()
+         
+        this.axios.delete("/apiv1/carrera/"+this.editedItem.id).then(function(response){
                 console.log("eliminado"+response)
                 alert("registro elimninado")
             }).catch(function(error){
                 console.log(error);
 
-            }).then(function(){
-                that
-                .cargando=false;
-                that.loadData(parseInt(this.paginacion.currentPage));
-
             })
+      },
 
-        },
-        },
-        mounted() {
-            this.loadData(1);
-        },
-    
+      close () {
+        this.dialog = false
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedIndex = -1
+        })
+      },
 
+      closeDelete () {
+        this.dialogDelete = false
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedIndex = -1
+        })
+      },
 
- 
- 
-}
-
-
+      save () {
+        if (this.editedIndex > -1) {
+          Object.assign(this.carreras[this.editedIndex], this.editedItem)
+          console.log(this.editedItem.id);
+           this.axios.put('/apiv1/carrera/'+this.editedItem.id, {
+           nombre:this.editedItem.nombre
+          })
+          .then(response => {
+            console.log(response);
+            })
+          .catch(error => {
+            console.log(error);
+           });
+        } else {
+          this.carreras.push(this.editedItem)
+        
+          console.log(this.editedItem);
+           this.axios.post('/apiv1/carrera',this.editedItem)
+                
+                
+            .catch(function(error){
+                console.log(error);
+            })
+        }
+        this.close()
+      },
+    },
+  }
 </script>

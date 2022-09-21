@@ -14,8 +14,8 @@ use Yii;
  * @property int|null $id_profesor
  *
  * @property Carrera $carrera
- * @property HorarioMateria[] $horarioMaterias
  * @property Profesor $profesor
+ * @property ReservaAula[] $reservaAulas
  */
 class Materia extends \yii\db\ActiveRecord
 {
@@ -66,16 +66,6 @@ class Materia extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[HorarioMaterias]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getHorarioMaterias()
-    {
-        return $this->hasMany(HorarioMateria::className(), ['id_materia' => 'id']);
-    }
-
-    /**
      * Gets query for [[Profesor]].
      *
      * @return \yii\db\ActiveQuery
@@ -83,5 +73,15 @@ class Materia extends \yii\db\ActiveRecord
     public function getProfesor()
     {
         return $this->hasOne(Profesor::className(), ['id' => 'id_profesor']);
+    }
+
+    /**
+     * Gets query for [[ReservaAulas]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReservaAulas()
+    {
+        return $this->hasMany(ReservaAula::className(), ['id_materia' => 'id']);
     }
 }

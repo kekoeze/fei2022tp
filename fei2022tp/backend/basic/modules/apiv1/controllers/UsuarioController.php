@@ -10,11 +10,11 @@ use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
 
 /**
- * Default controller for the `apiv1` module
+ * apiv1 module definition class
  */
-class HorariomateriaController extends ActiveController
+class UsuarioController extends ActiveController
 {
-    public $modelClass = 'app\modules\models\HorarioMateria';
+    public $modelClass = 'app\modules\models\Usuario';
     public static function allowedDomains()
     {
         return [$_SERVER["REMOTE_ADDR"], 'http://localhost:8080'];
@@ -35,7 +35,7 @@ class HorariomateriaController extends ActiveController
                 'cors'  => [
                     // restrict access to domains:
                     'Origin'                           => static::allowedDomains(),
-                    'Access-Control-Request-Method'    => ['POST', 'GET', 'OPTIONS'],
+                    'Access-Control-Request-Method'    => ['POST', 'GET', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
                     'Access-Control-Allow-Credentials' => true,
                     'Access-Control-Max-Age'           => 3600,                 // Cache (seconds)
                     'Access-Control-Allow-Headers' => ['authorization', 'X-Requested-With', 'content-type', 'some_custom_header']

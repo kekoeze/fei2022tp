@@ -3,7 +3,9 @@
    
      
     <v-main>
-       <principal-page/>
+    <div v-if="usuario!=null">
+      <principal-page/>
+    </div>
  <router-view/>
    
      
@@ -12,24 +14,47 @@
 </template>
 
 <script>
-
-
 import PrincipalPage from './components/PrincipalPage.vue';
+import cookie from "vue-cookie"
+
+
+
+
+
 
 
 export default {
   name: 'App',
 
   components: {
-    PrincipalPage,
+    PrincipalPage
    
+  
+  
     
+   
+
+   
+
    
     
   },
 
   data: () => ({
-    //
-  }),
+    
+
+    usuario:null
+    
+  }),created() {
+    
+      this.usuario=JSON.parse(cookie.get('usuario'))
+      
+  },
+
+
+
+
+
+
 };
 </script>

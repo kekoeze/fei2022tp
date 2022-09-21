@@ -32,7 +32,7 @@
           mdi-delete
         </v-icon>
       </v-btn>
-      <v-icon>chevron-down</v-icon>
+      
     </div>
 </template>
 
