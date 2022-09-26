@@ -58,7 +58,7 @@
         :event-overlap-mode="mode"
         :event-overlap-threshold="30"
         :event-color="getEventColor"
-        @change="getEvents"
+        
       ></v-calendar>
     </v-sheet>
   </div>
@@ -165,9 +165,9 @@ reservaAulaConId:[{
         
           
 
-           console.log("el minimo es:"+min)
+           /*console.log("el minimo es:"+min)
             console.log("el maximo es:"+max)
-            console.log("la materia es:"+that.reservaAulaConId[reserva].id_materia);
+            console.log("la materia es:"+that.reservaAulaConId[reserva].id_materia);*/
             for(const materia in that.materiaConId){
               if(that.reservaAulaConId[reserva].id_materia==that.materiaConId[materia].id){
            
@@ -206,7 +206,7 @@ reservaAulaConId:[{
               } }
 
           }
-          console.log("la carrera  es:"+Object.values(this.materiaConId[1].id_carrera) )
+         
           //termina materia
           for(const reserva in this.reservaAulaConId){
             for(const aula in this.aula){
@@ -226,8 +226,7 @@ reservaAulaConId:[{
         const response = await this.axios.get('/apiv1/reservaaula') 
         
         this.reservaAulaConId = response.data;
-  
-        console.log(this.reservaAulaConId[0].getAula());
+        
         
         
         

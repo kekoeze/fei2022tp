@@ -1,4 +1,5 @@
 <template>
+<v-container fluid grid-list-lg text-lg-left>
   <v-data-table
     :headers="headers"
     :items="horarioMaterias"
@@ -143,8 +144,30 @@
       >
         Reset
       </v-btn>
+      
     </template>
   </v-data-table>
+   <v-alert v-if="cartelInfo"
+                max-width="500px"
+               style="margin-left:15%"
+               
+                elevation="14"
+                shaped
+                
+                type=info
+                dismissible
+                >{{textoCartel}}</v-alert>
+                <v-alert v-if="cartelError"
+                max-width="500px"
+               style="margin-left:15%"
+               
+                elevation="14"
+                shaped
+                
+                type=error
+                dismissible
+                >{{textoCartel}}</v-alert>
+  </v-container>
 </template>
 
 <script>
@@ -152,6 +175,9 @@
     data: () => ({
       dialog: false,
       dialogDelete: false,
+       cartelInfo:false,
+      cartelError:false,
+      textoCartel:'',
       headers: [
         {
           text: 'fecha desde',
@@ -332,7 +358,9 @@
                 
 
             }).catch(function(error) {
-                console.log(error);
+                this.cartelError=true;
+              this.textoCartel=error;
+             
             }).then(function() {});
             
       },
@@ -346,7 +374,9 @@
                 
 
             }).catch(function(error) {
-                console.log(error);
+                this.cartelError=true;
+              this.textoCartel=error;
+            
             }).then(function() {});
             
       },
@@ -362,7 +392,9 @@
                 
 
             }).catch(function(error) {
-                console.log(error);
+                this.cartelError=true;
+              this.textoCartel=error;
+            
             }).then(function() {});
             
       },
@@ -398,9 +430,13 @@
                 console.log("eliminado"+response)
                 alert("registro elimninado")
             }).catch(function(error){
-                console.log(error);
+               this.cartelError=true;
+              this.textoCartel=error;
+              
 
             })
+            
+              
       },
 
       close () {
@@ -416,6 +452,9 @@
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
+          this.cartelInfo=true;
+          this.textoCartel="eliminado";
+          setTimeout(this.desactivarCartel,3000)
         })
       },
 
@@ -434,8 +473,17 @@
             console.log(response);
             })
           .catch(error => {
+            this.cartelError=true;
+              this.textoCartel=error;
+              
             console.log(error);
+           }).finally(()=>{
+            this.cartelInfo=true;
+          this.textoCartel="editado";
+          setTimeout(this.desactivarCartel,3000)
            });
+
+             
         } else {
           
           this.horarioMaterias.push(this.editedItem)
@@ -449,10 +497,22 @@
                 
             .catch(function(error){
                 console.log(error);
+                this.cartelError=true;
+              this.textoCartel=error;
+             
             })
-        }
+            
+              
+              
+        .finally(()=>{
+          this.cartelInfo=true;
+          this.textoCartel="guardado";
+          this.inicializar();
+        })
+        
         this.close()
-      },
+      }
     },
+  }
   }
 </script>

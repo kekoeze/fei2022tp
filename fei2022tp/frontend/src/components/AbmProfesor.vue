@@ -1,4 +1,5 @@
 <template>
+<v-container fluid grid-list-lg text-lg-left>
   <v-data-table
     :headers="headers"
     :items="profesores"
@@ -87,7 +88,7 @@
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+            <v-card-title class="text-h5">desea borrar este profesor?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
@@ -97,15 +98,7 @@
           </v-card>
         </v-dialog>
       </v-toolbar>
-        <v-alert v-if="cartel"
-                max-width="500px"
-               style="margin-left:20%"
-                color="green"
-                elevation="14"
-                shaped
-                type="tipoCartel"
-                
-                >{{textoCartel}}</v-alert>
+     
     </template>
    <template v-slot:[`item.actions`]="{ item }">
       <v-icon
@@ -129,8 +122,30 @@
       >
         Reset
       </v-btn>
+   
     </template>
   </v-data-table>
+     <v-alert v-if="cartelInfo"
+                max-width="500px"
+               style="margin-left:15%"
+               
+                elevation="14"
+                shaped
+                
+                type=info
+                dismissible
+                >{{textoCartel}}</v-alert>
+                <v-alert v-if="cartelError"
+                max-width="500px"
+               style="margin-left:15%"
+               
+                elevation="14"
+                shaped
+                
+                type=error
+                dismissible
+                >{{textoCartel}}</v-alert>
+</v-container>
 </template>
 
 <script>
@@ -138,8 +153,8 @@
     data: () => ({
       dialog: false,
       dialogDelete: false,
-      cartel:false,
-      tipoCartel:'',
+      cartelInfo:false,
+      cartelError:false,
       textoCartel:'',
       headers: [
        
@@ -205,7 +220,8 @@
                 
 
             }).catch(function(error) {
-                console.log(error);
+               this.activarCartel("error",error);
+               setTimeout(this.desactivarCartel(),3000)
             }).then(function() {});
             
       },
@@ -221,8 +237,8 @@
       deleteItem (item) {
         this.editedIndex = this.profesores.indexOf(item)
         this.editedItem = Object.assign({}, item)
-      /*var that=this;
-        this.dialogDelete = true*/
+    
+        this.dialogDelete = true
           
                
       },
@@ -233,12 +249,17 @@
          
         this.axios.delete("/apiv1/profesor/"+this.editedItem.id).then(function(response){
                 console.log("eliminado"+response)
-                this.cartel=true;
-                this.textoCartel="se borro exitosamente"
+               
             }).catch(function(error){
-                console.log(error);
+               this.activarCartel("error",error);
+               setTimeout(this.desactivarCartel(),3000)
 
+            }).finally(()=>{
+               this.activarCartel("se borro exitosamente")
+             setTimeout(this.desactivarCartel,3000)
             })
+            
+            
       },
 
       close () {
@@ -246,6 +267,7 @@
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
+
         })
       },
 
@@ -254,16 +276,18 @@
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
+         
         })
       },
-      activarCartel(tipoCartel){
+      activarCartel(textoCartel){
         
-        this.cartel=true;
-        this.textoCartel="se guardo exitosamente"
-        this.tipoCartel=tipoCartel;
+        this.cartelInfo=true;
+        this.textoCartel=textoCartel;
+        
       },
       desactivarCartel(){
-        this.cartel=false;
+        this.cartelInfo=false;
+        this.cartelError=false;
         this.textoCartel=""
       },
       save () {
@@ -279,8 +303,15 @@
             console.log(response);
             })
           .catch(error => {
-            console.log(error);
-           });
+            this.activarCartel("error");
+            console.log(error)
+               setTimeout(this.desactivarCartel(),3000)
+           }).finally(()=>{
+              this.activarCartel("se edito exitosamente")
+             setTimeout(this.desactivarCartel,3000)
+              this.inicializar();
+                
+            });
         } else {
           this.profesores.push(this.editedItem)
         
@@ -291,9 +322,9 @@
             .catch(function(error){
                 console.log(error);
             }).finally(()=>{
-              this.activarCartel("success")
+              this.activarCartel("se guardo exitosamente")
              setTimeout(this.desactivarCartel,3000)
-
+              this.inicializar();
                 
             })
         }

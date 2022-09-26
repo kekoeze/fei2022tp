@@ -4,7 +4,8 @@
  
 
     
-  <v-form  v-on:submit.prevent="registrarse">
+  <v-form  v-on:submit.prevent="registrarse" class="registrarse">
+  <h3>Registro</h3>
     <v-container>
       <v-row>
      
@@ -60,6 +61,15 @@
       >
         registrarse
       </v-btn>
+      <v-btn
+        lass="mr-4"
+        type="button"
+        :disabled="invalid"
+        
+       @click="dirigirLogin"
+      >
+        dirigirse a login
+      </v-btn>
     </v-container>
       <v-alert v-if="error==true"
   border="left"
@@ -108,6 +118,9 @@
       }
     },
     methods: {
+       dirigirLogin(){
+        this.$router.push("/")
+      },
      registrarse(){
         let json = {
           "usuario" : this.usuario,
@@ -141,6 +154,7 @@
             this.axios.post("/apiv1/usuario",this.usuarioCrear)
             .catch(function(error){
                 console.log(error);
+                this.error_msg=error;
             }).finally(()=>{
                 console.log("el usuario es:"+Object.values(this.usuarioCrear))
              this.$router.push('/');
@@ -152,3 +166,29 @@
     },
   }
 </script>
+<style scoped>
+h3{
+   font-size: 32px;
+    font-weight: 500;
+    line-height: 42px;
+    text-align: center;
+}
+.registrarse{
+
+    height: 50%;
+    width: 700px;
+    background-color: rgba(255,255,255,0.13);
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.1);
+    box-shadow: 0 0 40px rgba(8,7,16,0.6);
+    padding: 50px 35px;
+    
+
+  
+}
+</style>

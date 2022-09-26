@@ -1,5 +1,6 @@
 <template>
-  <v-form  v-on:submit.prevent="login">
+  <v-form  v-on:submit.prevent="login" class="login">
+  <h3>Ingresar usuario</h3>
     <v-container>
       <v-row>
      
@@ -51,14 +52,14 @@
       <v-btn
         class="mr-4"
         type="submit"
-        :disabled="invalid"
+        
       >
-        submit
+        login
       </v-btn>
         <v-btn
         class="mr-4"
         type="button"
-        :disabled="invalid"
+        
         
        @click="dirigirRegistro"
       >
@@ -102,6 +103,7 @@
        
     }),
     created() {
+      
       this.usuarioEncuentra=JSON.parse(cockies.get('usuario'))
       if(this.usuarioEncuentra!=null){
         this.$router.push('principal');
@@ -133,6 +135,7 @@
             cockies.set("usuario",JSON.stringify(json))
             
              this.$router.push('principal');
+             location.reload()
            
            }
            }
@@ -146,3 +149,28 @@
     },
   }
 </script>
+<style scoped>
+h3{
+   font-size: 32px;
+    font-weight: 500;
+    line-height: 42px;
+    text-align: center;
+}
+.login{
+
+    height: 320px;
+    width: 700px;
+    background-color: rgba(255,255,255,0.13);
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.1);
+    box-shadow: 0 0 40px rgba(8,7,16,0.6);
+    padding: 50px 35px;
+
+  
+}
+</style>

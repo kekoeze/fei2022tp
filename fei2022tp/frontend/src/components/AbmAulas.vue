@@ -1,4 +1,5 @@
 <template>
+<v-container fluid grid-list-lg text-lg-left>
   <v-data-table
     :headers="headers"
     :items="aulas"
@@ -6,6 +7,7 @@
     class="elevation-1"
   >
     <template v-slot:top>
+ 
       <v-toolbar
         flat
       >
@@ -30,6 +32,7 @@
             >
               nueva aula
             </v-btn>
+             
           </template>
           <v-card  >
             <v-card-title>
@@ -46,14 +49,13 @@
                   >
                     <v-text-field v-on:keyup.enter="save()"
                       v-model="editedItem.cant_pcs"
+                      type=number
                       label="cantidad pcs"
                     ></v-text-field>
-                     <v-text-field v-on:keyup.enter="save()"
-                      v-model="editedItem.descripccion"
-                      label="descripccion"
-                    ></v-text-field>
+                   
                      <v-text-field v-on:keyup.enter="save()"
                       v-model="editedItem.cant_proyector"
+                      type=number
                       label="cant proyectores"
                     ></v-text-field>
                      <v-text-field v-on:keyup.enter="save()"
@@ -129,8 +131,29 @@
       >
         Reset
       </v-btn>
+   
     </template>
   </v-data-table>
+
+        <v-alert v-if="cartelInfo"
+                max-width="500px"
+               style="margin-left:20%"
+                
+                elevation="14"
+                shaped
+                type=info
+                dismissible
+                >{{textoCartel}}</v-alert>
+                 <v-alert v-if="cartelError"
+                max-width="500px"
+               style="margin-left:15%"
+               
+                elevation="14"
+                shaped
+                
+                type=error
+                dismissible
+                >{{textoCartel}}</v-alert>   </v-container>
 </template>
 
 <script>
@@ -138,6 +161,9 @@
     data: () => ({
       dialog: false,
       dialogDelete: false,
+      cartelInfo:false,
+      cartelError:false,
+      textoCartel:'',
       headers: [
        
         { text: 'cant proyector', value: 'cant_proyector' },
@@ -208,8 +234,13 @@
                 
 
             }).catch(function(error) {
-                console.log(error);
-            }).then(function() {});
+             this.cartelError=true;
+            
+            this.textoCartel=error;
+            }).then(function() {
+                
+
+            });
             
       },
 
@@ -227,18 +258,30 @@
       
         this.dialogDelete = true
       },
-
+    desactivarCartel(){
+        this.cartelInfo=false;
+         this.cartelError=false;
+        this.textoCartel=""
+      },
       deleteItemConfirm () {
         this.aulas.splice(this.editedIndex, 1)
         this.closeDelete()
          
         this.axios.delete("/apiv1/aula/"+this.editedItem.id).then(function(response){
                 console.log("eliminado"+response)
-                alert("registro elimninado")
+               
             }).catch(function(error){
+              this.cartelError=true;
+              
+                this.textoCartel=error;
                 console.log(error);
 
             })
+          this.cartelInfo=true;
+          this.textoCartel="eliminado";
+          setTimeout(this.desactivarCartel,3000)
+              
+            
       },
 
       close () {
@@ -254,6 +297,10 @@
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
+          this.cartelInfo=true;
+          this.textoCartel="eliminado";
+          setTimeout(this.desactivarCartel,3000)
+        
         })
       },
 
@@ -274,8 +321,15 @@
             console.log(response);
             })
           .catch(error => {
-            console.log(error);
-           });
+            this.cartelError=true;
+                this.textoCartel=error;
+         
+             
+           }).finally(()=>{ this.cartelInfo=true;
+        this.textoCartel="registro modificado";
+        setTimeout(this.desactivarCartel,3000)
+        this.inicializar()});
+              
         } else {
           this.aulas.push(this.editedItem)
         
@@ -284,9 +338,19 @@
                 
                 
             .catch(function(error){
-                console.log(error);
+              this.cartelError=true;
+                this.textoCartel=error;
+             
             })
+              .finally(()=>{
+          this.cartelInfo=true;
+          this.textoCartel="guardado";
+          setTimeout(this.desactivarCartel,3000)
+          this.inicializar();
+        })
+              
         }
+       
         this.close()
       },
     },

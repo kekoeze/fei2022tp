@@ -1,15 +1,19 @@
 <template>
+<v-container fluid grid-list-lg text-lg-left>
   <v-data-table
     :headers="headers"
     :items="carreras"
     sort-by="carreras"
     class="elevation-1"
+    
+    
   >
     <template v-slot:top>
       <v-toolbar
         flat
       >
         <v-toolbar-title>My CRUD</v-toolbar-title>
+          
         <v-divider
           class="mx-4"
           inset
@@ -30,6 +34,7 @@
             >
               nueva carrera
             </v-btn>
+             
           </template>
           <v-card  >
             <v-card-title>
@@ -41,7 +46,7 @@
                 <v-row>
                   <v-col
                     cols="12"
-                    sm="6"
+                    sm="5"
                     md="4"
                   >
                     <v-text-field v-on:keyup.enter="save()"
@@ -110,6 +115,27 @@
       </v-btn>
     </template>
   </v-data-table>
+   <v-alert v-if="cartelInfo"
+                max-width="500px"
+               style="margin-left:15%"
+               
+                elevation="14"
+                shaped
+                
+                type=info
+                dismissible
+                >{{textoCartel}}</v-alert>
+                <v-alert v-if="cartelError"
+                max-width="500px"
+               style="margin-left:15%"
+               
+                elevation="14"
+                shaped
+                
+                type=error
+                dismissible
+                >{{textoCartel}}</v-alert>
+</v-container>
 </template>
 
 <script>
@@ -117,6 +143,10 @@
     data: () => ({
       dialog: false,
       dialogDelete: false,
+      cartelInfo:false,
+      cartelError:false,
+      textoCartel:'',
+      
       headers: [
         {
           text: 'carreras',
@@ -173,7 +203,8 @@
                 
 
             }).catch(function(error) {
-                console.log(error);
+               this.cartel=true;
+                this.textoCartel=error;
             }).then(function() {});
             
       },
@@ -189,8 +220,9 @@
       deleteItem (item) {
         this.editedIndex = this.carreras.indexOf(item)
         this.editedItem = Object.assign({}, item)
-      
+        
         this.dialogDelete = true
+        
       },
 
       deleteItemConfirm () {
@@ -199,13 +231,21 @@
          
         this.axios.delete("/apiv1/carrera/"+this.editedItem.id).then(function(response){
                 console.log("eliminado"+response)
-                alert("registro elimninado")
+              
             }).catch(function(error){
+              this.cartelError=true;
+                this.textoCartel=error;
+                
                 console.log(error);
 
             })
+            
       },
-
+ desactivarCartel(){
+        this.cartelInfo=false;
+         this.cartelError=false;
+        this.textoCartel=""
+      },
       close () {
         this.dialog = false
         this.$nextTick(() => {
@@ -219,7 +259,11 @@
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
+          this.cartelInfo=true;
+              this.textoCartel="eliminado";
+              setTimeout(this.desactivarCartel,3000)
         })
+       
       },
 
       save () {
@@ -233,8 +277,14 @@
             console.log(response);
             })
           .catch(error => {
+            this.cartelError=true;
+                this.textoCartel=error;
             console.log(error);
-           });
+           }).finally(()=>{ this.cartelInfo=true;
+        this.textoCartel="registro modificado";
+        setTimeout(this.desactivarCartel,3000)
+        this.inicializar()});
+           
         } else {
           this.carreras.push(this.editedItem)
         
@@ -243,10 +293,21 @@
                 
                 
             .catch(function(error){
+              this.cartel=true;
+                this.textoCartel=error;
                 console.log(error);
             })
+              .finally(()=>{
+          this.cartelInfo=true;
+          this.textoCartel="guardado";
+          setTimeout(this.desactivarCartel,3000)
+          this.inicializar();
+        })
+        
         }
+       
         this.close()
+        
       },
     },
   }

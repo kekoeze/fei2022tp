@@ -1,11 +1,12 @@
 <template>
 
-   <div>
-  <v-card  class="float-left">
+   
+   <v-container>
 
-    <v-navigation-drawer
-      v-model="drawer"
+     <v-navigation-drawer
+    v-model="drawer"
       :mini-variant.sync="mini"
+      app
       permanent
     >
     <v-list-item class="d-flex justify-end mb-6"
@@ -14,6 +15,9 @@
       tile>
      
       <v-list-item-title>Programador</v-list-item-title>
+       
+   
+     
     <v-icon style="" >mdi-backspace-reverse</v-icon>
     </v-list-item>
       <v-list-item class="px-2">
@@ -32,8 +36,16 @@
           <v-icon>mdi-chevron-left</v-icon>
         </v-btn>
       </v-list-item>
-      <v-list-item class="px-2">
-
+      <v-list-item class="px-2" >
+     
+       <a class="sacarEstiloHref" style="display: flex;
+  justify-content: end;align-items: center;" v-on:click="deslogearse" >
+                <span >
+                  <svg style="width:20%;float:right" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                </span>
+                Logout
+              </a> 
+     
     </v-list-item>
       <v-divider></v-divider>
   <v-list dense v-if="usuario.isAdmin==false">
@@ -83,9 +95,8 @@
         
     </v-navigation-drawer>
    
-  </v-card>
- 
-  </div>
+    </v-container>
+
 
 </template>
 
@@ -135,8 +146,20 @@ export default {
     }
    , methods: {
       isAdmin(){
+     
         var that=this;
         that.usuario=JSON.parse(cockies.get('usuario'))
+        
+        
+      },
+      deslogearse(){
+        var that=this;
+        console.log("entro aca")
+        cockies.delete('usuario');
+         that.$router.push('/');
+         location.reload()
+       
+        
         
       }
     },
@@ -152,17 +175,16 @@ export default {
 .butonStyle{
    
   
- 
+  
    margin: 10px;
 }
 .achicar{
   width: 50%;
-  height: auto;
+  
   
 }
 .texto{
-height:25px;
-width:100px;
+
 text-overflow:ellipsis;
 overflow:hidden;
 white-space:nowrap;

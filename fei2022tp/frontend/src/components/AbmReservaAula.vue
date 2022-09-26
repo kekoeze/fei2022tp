@@ -1,4 +1,5 @@
 <template>
+<v-container fluid grid-list-lg text-lg-left>
   <v-data-table
     :headers="headers"
     :items="reservaAula"
@@ -141,8 +142,30 @@
       >
         Reset
       </v-btn>
+        
     </template>
   </v-data-table>
+   <v-alert v-if="cartelInfo"
+                max-width="500px"
+               style="margin-left:15%"
+               
+                elevation="14"
+                shaped
+                
+                type=info
+                dismissible
+                >{{textoCartel}}</v-alert>
+                <v-alert v-if="cartelError"
+                max-width="500px"
+               style="margin-left:15%"
+               
+                elevation="14"
+                shaped
+                
+                type=error
+                dismissible
+                >{{textoCartel}}</v-alert>
+</v-container>
 </template>
 
 <script>
@@ -150,6 +173,9 @@
     data: () => ({
       dialog: false,
       dialogDelete: false,
+       cartelInfo:false,
+      cartelError:false,
+      textoCartel:'',
       headers: [
         {
           text: 'fecha_desde',
@@ -369,7 +395,8 @@
             this.reservaAula = response.data;
              console.log("la reseerva:"+this.reservaAula[0].id);
              }catch(error) {
-                console.log(error);
+                this.cartelError=true;
+              this.textoCartel=error;
              }
             
       },
@@ -380,7 +407,8 @@
             this.aula = response.data;
              console.log("el aula:"+this.aula[0].descripccion);
              }catch(error) {
-                console.log(error);
+                this.cartelError=true;
+              this.textoCartel=error;
              }
             
       },
@@ -391,7 +419,8 @@
             this.profesor = response.data;
              console.log("el profesor:"+this.profesor[0].nombre);
              }catch(error) {
-                console.log(error);
+               this.cartelError=true;
+              this.textoCartel=error;
              }
             
       },
@@ -402,7 +431,8 @@
             this.materia = response.data;
              console.log("la materia es:"+this.materia[0].nombre);
              }catch(error) {
-                console.log(error);
+                this.cartelError=true;
+              this.textoCartel=error;
              }
             
       },
@@ -413,7 +443,8 @@
             this.carrera = response.data;
              console.log(this.carrera[0].nombre);
              }catch(error) {
-                console.log(error);
+                this.cartelError=true;
+              this.textoCartel=error;
              }
             
       },
@@ -445,9 +476,10 @@
          
         this.axios.delete("/apiv1/reservaaula/"+this.editedItem.id).then(function(response){
                 console.log("eliminado"+response)
-                alert("registro elimninado")
+                
             }).catch(function(error){
-                console.log(error);
+                this.cartelError=true;
+              this.textoCartel=error;
 
             })
       },
@@ -465,6 +497,8 @@
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
+           this.cartelInfo=true;
+              this.textoCartel="reserva borrada";
         })
       },
 
@@ -484,8 +518,12 @@
             console.log(response);
             })
           .catch(error => {
-            console.log(error);
-           });
+            this.cartelError=true;
+              this.textoCartel=error;
+           }).finally(()=>{ this.cartelInfo=true;
+        this.textoCartel="registro modificado";
+        setTimeout(this.desactivarCartel,3000)
+        this.inicializar()});
         } else {
             console.log(" en save entro aca")
           this.reservaAula.push(this.editedItem);
@@ -499,8 +537,11 @@
                 
             
             .catch(function(error){
-                console.log(error);
+                this.cartelError=true;
+              this.textoCartel=error;
             }).finally(()=>{
+               this.cartelInfo=true;
+              this.textoCartel="reserva aula guardada";
              this.agregarReservaAula();
             })
         }
